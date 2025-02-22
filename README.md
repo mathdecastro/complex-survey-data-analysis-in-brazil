@@ -1,8 +1,8 @@
 # Complex survey data analysis in Brazil using R
 ### 1. Introduction - A little bit of context
 John is an US citizen interested in answering these questions that are important for your master's degree project:
-- Which state of Brazil had the **lowest** percentage of people employed in the 4th quarter of 2024;
-- Which state of Brazil had the **highest** percentage of people employed in the 4th quarter of 2024;
+- Which state of Brazil had the **lowest** unemployment rate in the 4th quarter of 2024;
+- Which state of Brazil had the **highest** unemployment rate in the 4th quarter of 2024;
 
 ### 2. Libraries used
 
@@ -18,7 +18,7 @@ library(expss)
 library(survey)
 ```
 
-### 3. Selecting a list of variables of interest
+### 3. Creating a list of variables of interest
 
 ```r
 variables = c("UF","V2001","V2005","V2007","V2009",
@@ -34,10 +34,10 @@ data = get_pnadc(year = 2024,
                  vars = variables)
 ```
 
-### 5. Calculating the percentage
+### 5. Calculating the unemployment rate by state
 
 ```r
-# CALCULATING THE TOTAL OF PEOPLE EMPLOYED AND NOT EMPLOYED USING THE WEIGHTS CALCULATED BY "V1028" VARIABLE
+# CALCULATING THE TOTAL OF PEOPLE EMPLOYED AND UNEMPLOYED USING THE WEIGHTS CALCULATED BY "V1028" VARIABLE
 indicators = data$variables %>%
  tab_cells(UF) %>%
  tab_cols(VD4002) %>%
@@ -48,11 +48,11 @@ indicators = data$variables %>%
 
 # TRANSFORMING THE DATA INTO A DATA FRAME AND RENAMING THE COLUMNS
 indicators = as.data.frame(indicators)
-colnames(indicators) = c("state", "people_employed", "people_not_employed")
+colnames(indicators) = c("state", "people_employed", "people_unemployed")
 
-# CREATING THE "PEOPLE NOT EMPLOYED" PERCENTAGE
+# CREATING THE UNEMPLOYMENT RATE
 indicators = indicators %>%
-  mutate(people_not_employed_percentage = people_not_employed/(people_employed+people_not_employed)*100)
+  mutate(unemployment_rate = people_unemployed/(people_employed+people_unemployed)*100)
 
 # DELETING THE ROW WITH THE TOTAL
 indicators = indicators[-c(28),]
@@ -63,12 +63,12 @@ indicators$region = c(rep("N", 7),rep("NE", 9), rep("SE", 4), rep("S", 3), rep("
 
 # SELECTING THE COLUMNS
 indicators = indicators %>%
-  select(state, region, people_not_employed_percentage)
+  select(state, region, unemployment_rate)
 ```
 
-#### The dataframe will be like this
+The resulted dataframe will look like this
 
-| state | region | people_not_employed_percentage |
+| state | region | unemployment_rate |
 | --- | --- | ---|
 | RO | N | 2.763382 |
 | AC | N | 7.281652 |
@@ -97,3 +97,5 @@ indicators = indicators %>%
 | MT | CO	| 2.464903 |
 | GO | CO	| 4.815546 |
 | DF | CO	| 9.067315 |
+
+Answering the two first questions, the state with the lowest unemployment rate in the 4th quarter of 2024 was **Mato Grosso (MT)**, in the midwest region of Brazil, with a unemployment rate of **2.46%**. And the state with the highest unemployment rate was **Pernambuco (PE)**, in the northeast region of Brazil, with a rate of **10.20%**.
