@@ -65,9 +65,9 @@ indicators$region = c(rep("N", 7),rep("NE", 9), rep("SE", 4), rep("S", 3), rep("
 indicators = indicators %>%
   select(state, region, unemployment_rate)
 ```
-
+####
+####
 The resulted dataframe will look like this
-
 | state | region | unemployment_rate |
 | --- | --- | ---|
 | RO | N | 2.763382 |
@@ -97,5 +97,6 @@ The resulted dataframe will look like this
 | MT | CO	| 2.464903 |
 | GO | CO	| 4.815546 |
 | DF | CO	| 9.067315 |
-
-Answering the two first questions, the state with the lowest unemployment rate in the 4th quarter of 2024 was **Mato Grosso (MT)**, in the midwest region of Brazil, with a unemployment rate of **2.46%**. And the state with the highest unemployment rate was **Pernambuco (PE)**, in the northeast region of Brazil, with a rate of **10.20%**.
+####
+####
+Answering the first two questions, the state with the lowest unemployment rate in the 4th quarter of 2024 was **Mato Grosso (MT)**, in the midwest region of Brazil, with a unemployment rate of **2.46%**. And the state with the highest unemployment rate was **Pernambuco (PE)**, in the northeast region of Brazil, with a rate of **10.20%**.
