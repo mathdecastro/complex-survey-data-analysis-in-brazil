@@ -57,7 +57,7 @@ def pnad_dataframe(year, quarter, variables, df_mapping):
     timeout = 12
     for retry in range(1, max_retry + 1):
         try:
-            response = requests.get(f'https://ftp.ibge.gov.br/Trabalho_e_Rendimento/Pesquisa_Nacional_por_Amostra_de_Domicilios_continua/Trimestral/Microdados/{year}/PNADC_0{quarter}{year}.zip', timeout = timeout)
+            response = requests.get(f'https://ftp.ibge.gov.br/Trabalho_e_Rendimento/Pesquisa_Nacional_por_Amostra_de_Domicilios_continua/Trimestral/Microdados/{year}/{get_zip_name(year, quarter)}', timeout = timeout)
             archive = ZipFile(BytesIO(response.content))
             df = pd.read_fwf(BytesIO(archive.read(f'PNADC_0{quarter}{year}.txt')), colspecs = colspecs, names = colnames)
             break
@@ -67,3 +67,12 @@ def pnad_dataframe(year, quarter, variables, df_mapping):
             break
 
     return df
+
+def get_zip_name(year, quarter):
+    url = 'https://servicodados.ibge.gov.br/api/v1/downloads/estatisticas?caminho=Trabalho_e_Rendimento/Pesquisa_Nacional_por_Amostra_de_Domicilios_continua/Trimestral/Microdados&nivel=1'
+    response = requests.get(url)
+    for folder in response.json():
+        if folder['children'] != None:
+            for file in folder['children']:
+                if file['name'].startswith(f'PNADC_0{quarter}{year}') & file['name'].endswith('.zip'):
+                    return file['name']
